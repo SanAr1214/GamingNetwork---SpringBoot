@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 18px; color:#222; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; }
+        .filters { display:flex; gap:8px; align-items:center; }
+        .filters select, .filters input { padding:7px 9px; border-radius:4px; border:1px solid #cfcfcf; }
+        .btn-primary {
+            background-color:#d9534f; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;
+        }
+        .btn-primary:hover { background-color:#c9302c; }
+        table { width:100%; border-collapse:collapse; background:white; box-shadow: 0 0 0 1px #e6e6e6; }
+        thead th { background:#f2f2f2; text-align:left; padding:10px 12px; font-weight:600; border-bottom:1px solid #e0e0e0; }
+        tbody td { padding:10px 12px; border-bottom:1px solid #f0f0f0; }
+        tbody tr:hover { background:#fafafa; }
+        .right { display:flex; gap:10px; align-items:center; }
+        .small-muted { font-size:0.9rem; color:#666; }
+        @media (max-width:900px){
+            table { font-size:0.9rem; }
+            .filters { flex-wrap:wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="filters">
+        <form th:action="@{/usuarios}" method="get" style="display:flex; gap:8px; align-items:center;">
+            <select name="rol">
+                <option value="" th:selected="${rolSeleccionado == ''}">Todos los roles</option>
+                <option value="Cliente" th:selected="${rolSeleccionado == 'Cliente'}">Cliente</option>
+                <option value="Admin" th:selected="${rolSeleccionado == 'Admin'}">Admin</option>
+            </select>
+
+            <!-- El estado siempre es Activo en la tabla, pero dejamos el filtro por si lo quieres usar luego -->
+            <select name="estado">
+                <option value="" selected>Todos los estados</option>
+                <option value="Activo">Activo</option>
+            </select>
+
+            <input type="text" name="filtro" th:value="${filtro}" placeholder="Buscar por nickname, nombre o correo" />
+
+            <button class="btn-primary" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <div class="right">
+        <span class="small-muted">Todo el tiempo</span>
+        <button class="btn-primary" type="button">Agregar usuario</button>
+    </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Usuario (nickname)</th>
+        <th>Nombre</th>
+        <th>Correo electrónico</th>
+        <th>Rol</th>
+        <th>Estado</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="usuario : ${usuarios}">
+        <td th:text="${usuario.nickname}">nickname</td>
+        <td th:text="${usuario.nombre != null ? usuario.nombre : '-'}">Nombre</td>
+        <td th:text="${usuario.correo}">correo@ejemplo.com</td>
+        <td th:text="${usuario.rol != null ? usuario.rol : 'Estandar'}">Estandar</td>
+        <!-- Estado forzado como texto 'Activo' (no viene de la BD) -->
+        <td>Activo</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
